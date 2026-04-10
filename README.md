@@ -101,6 +101,16 @@ Examples:
 - `write me a markdown file with the plan and send it back`
 - `generate a shell script and attach it`
 
+### Telegram commands
+
+In the bot DM:
+
+- `/help`, `/start` – show help
+- `/status` – show model/usage/context stats
+- `/compact` – trigger compaction (only when pi is idle)
+- `/new` – start a new pi session
+- `/stop` or `stop` – abort active turn
+
 ### Stop a run
 
 In Telegram, send:
@@ -133,6 +143,7 @@ It tries Telegram draft streaming first with `sendMessageDraft`. If that is not 
 - Replies are sent as normal Telegram messages, not quote-replies
 - Long replies are split below Telegram's 4096 character limit
 - Outbound files are sent via `telegram_attach`
+- If connected, the bridge reconnects automatically after session switches (`/new`, `/resume`, `/fork`) and `/reload`
 
 ## License
 

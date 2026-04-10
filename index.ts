@@ -13,6 +13,7 @@ interface TelegramConfig {
 	botId?: number;
 	allowedUserId?: number;
 	lastUpdateId?: number;
+	reconnectOnSessionStart?: boolean;
 }
 
 interface TelegramApiResponse<T> {
@@ -773,6 +774,16 @@ export default function (pi: ExtensionAPI) {
 			return;
 		}
 
+		if (lower === "/new") {
+			if (!ctx.isIdle()) {
+				await sendTextReply(firstMessage.chat.id, firstMessage.message_id, "Cannot start a new session while pi is busy. Send \"stop\" first.");
+				return;
+			}
+			await sendTextReply(firstMessage.chat.id, firstMessage.message_id, "Starting a new pi session...");
+			pi.sendUserMessage("/new");
+			return;
+		}
+
 		if (lower === "/status") {
 			let totalInput = 0;
 			let totalOutput = 0;
@@ -824,7 +835,7 @@ export default function (pi: ExtensionAPI) {
 			await sendTextReply(
 				firstMessage.chat.id,
 				firstMessage.message_id,
-				`Send me a message and I will forward it to pi. Commands: /status, /compact, stop.`,
+				`Send me a message and I will forward it to pi. Commands: /new, /status, /compact, /stop.`,
 			);
 			if (config.allowedUserId === undefined && firstMessage.from) {
 				config.allowedUserId = firstMessage.from.id;
@@ -1020,9 +1031,20 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
-	pi.on("session_start", async (_event, ctx) => {
+	pi.on("session_start", async (event, ctx) => {
 		config = await readConfig();
 		await mkdir(TEMP_DIR, { recursive: true });
+
+		const reconnectRequested = config.reconnectOnSessionStart === true;
+		if (reconnectRequested) {
+			config.reconnectOnSessionStart = false;
+			await writeConfig(config);
+		}
+
+		if (event.reason !== "startup" && reconnectRequested && config.botToken) {
+			await startPolling(ctx);
+		}
+
 		updateStatus(ctx);
 	});
 
@@ -1038,6 +1060,12 @@ export default function (pi: ExtensionAPI) {
 		activeTelegramTurn = undefined;
 		currentAbort = undefined;
 		preserveQueuedTurnsAsHistory = false;
+
+		if (pollingPromise && config.botToken) {
+			config.reconnectOnSessionStart = true;
+			await writeConfig(config);
+		}
+
 		await stopPolling();
 	});
 
