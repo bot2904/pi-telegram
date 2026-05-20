@@ -945,6 +945,23 @@ export default function (pi: ExtensionAPI) {
 	}
 
 	pi.registerTool({
+		name: "telegram_get_active_model",
+		label: "Telegram Get Active Model",
+		description: "Retrieves the currently active AI model and provider in this pi session.",
+		promptSnippet: "Check which model/provider is active.",
+		parameters: Type.Object({}),
+		async execute(_toolCallId, _params, ctx) {
+			if (!ctx.model) {
+				return { content: [{ type: "text", text: "No active model configured." }] };
+			}
+			return {
+				content: [{ type: "text", text: `Active model: ${ctx.model.provider}/${ctx.model.id}` }],
+				details: { provider: ctx.model.provider, id: ctx.model.id },
+			};
+		},
+	});
+
+	pi.registerTool({
 		name: "telegram_attach",
 		label: "Telegram Attach",
 		description: "Queue one or more local files to be sent with the next Telegram reply.",
