@@ -11,13 +11,13 @@ Telegram DM bridge for pi.
 From git:
 
 ```bash
-pi install git:github.com/badlogic/pi-telegram
+pi install git:github.com/earendil-works/pi-telegram
 ```
 
 Or for a single run:
 
 ```bash
-pi -e git:github.com/badlogic/pi-telegram
+pi -e git:github.com/earendil-works/pi-telegram
 ```
 
 ## Configure
