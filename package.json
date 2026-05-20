@@ -8,11 +8,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/earendil-works/pi-telegram.git"
+    "url": "https://github.com/bot2904/pi-telegram.git"
   },
-  "homepage": "https://github.com/earendil-works/pi-telegram",
+  "homepage": "https://github.com/bot2904/pi-telegram",
   "bugs": {
-    "url": "https://github.com/earendil-works/pi-telegram/issues"
+    "url": "https://github.com/bot2904/pi-telegram/issues"
   },
   "pi": {
     "extensions": ["./index.ts"]
