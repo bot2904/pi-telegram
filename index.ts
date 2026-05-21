@@ -950,7 +950,7 @@ export default function (pi: ExtensionAPI) {
 		description: "Retrieves the currently active AI model and provider in this pi session.",
 		promptSnippet: "Check which model/provider is active.",
 		parameters: Type.Object({}),
-		async execute(_toolCallId, _params, ctx) {
+		async execute(_toolCallId, _params, _signal, _onUpdate, ctx) {
 			if (!ctx.model) {
 				return { content: [{ type: "text", text: "No active model configured." }] };
 			}
